@@ -1,6 +1,3 @@
-# MTU-Autokonfiguration für Windows-Netzwerkadapter
-
-# Funktion: MTU-Wert durch Pings ermitteln
 function Get-OptimalMTU {
     $tarkovhost = "prod.escapefromtarkov.com"
     $maxMTU = 1500
@@ -9,23 +6,37 @@ function Get-OptimalMTU {
 
     Write-Host "Ermittle optimale MTU für $tarkovhost..."
 
-    while ($minMTU -le $maxMTU) {
-        $testMTU = [math]::Floor(($minMTU + $maxMTU) / 2)
-        $pingResult = Test-Connection -ComputerName $tarkovhost -BufferSize $testMTU -Count 1 -DontFragment -ErrorAction SilentlyContinue
+    while ($maxMTU -ge $minMTU) {
+        $testMTU = [math]::Floor(($maxMTU + $minMTU) / 2)
 
-        if ($pingResult) {
-            $optimalMTU = $testMTU
-            $minMTU = $testMTU + 1
-        } else {
+        $pingResult = & ping $tarkovhost -f -l $testMTU 2>&1
+
+        if ($pingResult -match "100% Verlust") {
             $maxMTU = $testMTU - 1
+        }
+        elseif ($pingResult -match "75% Verlust") {
+            $maxMTU = $testMTU - 1
+        }
+        elseif ($pingResult -match "50% Verlust") {
+            $maxMTU = $testMTU - 1
+        }
+        elseif ($pingResult -match "25% Verlust") {
+            $maxMTU = $testMTU - 1
+        }
+        else {
+            $minMTU = $testMTU + 1
+        }
+
+        if ($maxMTU - $minMTU -lt 1) {
+            break
         }
     }
 
-    Write-Host "Optimale MTU ermittelt: $optimalMTU"
+    $optimalMTU = $maxMTU
+    Write-Host "Optimale MTU gefunden: $optimalMTU"
     return $optimalMTU + 28
 }
 
-# Funktion: MTU auf allen Adaptern setzen
 function Set-MTU {
     param (
         [int]$MTUValue
@@ -37,8 +48,7 @@ function Set-MTU {
         Start-Process -FilePath "netsh" -ArgumentList "int ipv4 set subinterface `"$($adapter.InterfaceAlias)`" mtu=$MTUValue store=persistent" -NoNewWindow -Wait
     }
 }
-
-# Main
+#main, needs restart after execution
 $optimalMTU = Get-OptimalMTU
 Set-MTU -MTUValue $optimalMTU
-Write-Host "Konfiguration abgeschlossen. Neustart empfohlen!"
+Write-Host "Konfiguration abgeschlossen. Bitte starte deinen PC neu!"

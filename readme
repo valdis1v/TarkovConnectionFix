@@ -1,19 +1,21 @@
-# Automatische MTU-Optimierung für Windows
+# Automatic MTU Optimization for Windows
 
-Dieses PowerShell-Skript ermittelt automatisch den optimalen MTU-Wert (Maximum Transmission Unit) für dein Netzwerk und setzt diesen auf alle aktiven Netzwerkadapter. Das Ziel ist es, Verbindungsprobleme zu reduzieren, die durch Paketfragmentierung entstehen können, insbesondere bei DS-Lite-Verbindungen oder Providern wie Vodafone Kabel Deutschland.
+This PowerShell script automatically determines the optimal MTU (Maximum Transmission Unit) value for your network and sets it on all active network adapters. The goal is to reduce connection issues caused by packet fragmentation, especially with DS-Lite connections or providers like Vodafone Kabel Deutschland.
 
 ## Features
-- Automatische Ermittlung der optimalen MTU durch Pings.
-- Anpassung der MTU auf alle aktiven Netzwerkadapter.
-- Minimierung von Netzwerkproblemen wie Paketverlusten oder hohen Latenzen.
+- Automatic determination of the optimal MTU through pings.
+- Adjustment of the MTU on all active network adapters.
+- Minimization of network issues such as packet loss or high latency.
 
-## Anforderungen
-- Windows 10/11 oder höher.
-- Administratorrechte für die Ausführung des Skripts.
-- Internetverbindung.
+## Requirements
+- Windows 10/11 or higher.
+- Administrator rights to run the script.
+- Internet connection.
+- Needs Restart after Execution
 
-## Verwendung
-1. Lade die Datei `SetMTU.ps1` herunter oder klone dieses Repository:
+## Usage
+1. Download the `SetMTU.ps1` file or clone this repository:
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://github.com/valdis1v/TarkovConnectionFix.git
    cd repository
+   ```
