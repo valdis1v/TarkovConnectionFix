@@ -1,4 +1,4 @@
-# Automatic MTU Optimization for Windows
+# Automatic MTU Optimization for Escape From Tarkov Disconnection Loop 
 
 This PowerShell script automatically determines the optimal MTU (Maximum Transmission Unit) value for your network and sets it on all active network adapters. The goal is to reduce connection issues caused by packet fragmentation, especially with DS-Lite connections or providers like Vodafone Kabel Deutschland.
 
