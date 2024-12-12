@@ -4,7 +4,7 @@ function Get-OptimalMTU {
     $minMTU = 1400
     $optimalMTU = $maxMTU
 
-    Write-Host "Ermittle optimale MTU für $tarkovhost..."
+    Write-Host "$tarkovhost..."
 
     while ($maxMTU -ge $minMTU) {
         $testMTU = [math]::Floor(($maxMTU + $minMTU) / 2)
@@ -33,7 +33,7 @@ function Get-OptimalMTU {
     }
 
     $optimalMTU = $maxMTU
-    Write-Host "Optimale MTU gefunden: $optimalMTU"
+    Write-Host "$optimalMTU"
     return $optimalMTU + 28
 }
 
@@ -44,11 +44,10 @@ function Set-MTU {
 
     $adapters = Get-NetIPInterface | Where-Object {$_.InterfaceOperationalStatus -eq "Up"}
     foreach ($adapter in $adapters) {
-        Write-Host "Setze MTU=$MTUValue für Adapter: $($adapter.InterfaceAlias)"
+        Write-Host "$MTUValue $($adapter.InterfaceAlias)"
         Start-Process -FilePath "netsh" -ArgumentList "int ipv4 set subinterface `"$($adapter.InterfaceAlias)`" mtu=$MTUValue store=persistent" -NoNewWindow -Wait
     }
 }
 #main, needs restart after execution
 $optimalMTU = Get-OptimalMTU
 Set-MTU -MTUValue $optimalMTU
-Write-Host "Konfiguration abgeschlossen. Bitte starte deinen PC neu!"
